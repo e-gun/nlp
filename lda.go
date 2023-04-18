@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/james-bowman/sparse"
+	"github.com/e-gun/sparse"
 	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/mat"
 )
@@ -167,8 +167,8 @@ func NewLatentDirichletAllocation(k int) *LatentDirichletAllocation {
 		TransformationPasses:          500,
 		MeanChangeTolerance:           1e-5,
 		ChangeEvaluationFrequency:     30,
-		Alpha: 0.1,
-		Eta:   0.01,
+		Alpha:                         0.1,
+		Eta:                           0.01,
 		RhoPhi: LearningSchedule{
 			S:     10,
 			Tau:   1000,

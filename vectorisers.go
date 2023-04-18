@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/james-bowman/sparse"
+	"github.com/e-gun/sparse"
 	"github.com/spaolacci/murmur3"
 	"gonum.org/v1/gonum/mat"
 )
@@ -282,8 +282,8 @@ func (v *HashingVectoriser) FitTransform(docs ...string) (mat.Matrix, error) {
 // transformation steps.  For example to compose a classic LSA/LSI pipeline
 // (vectorisation -> TFIDF transformation -> Truncated SVD) one could use a
 // Pipeline as follows:
-// 	lsaPipeline := NewPipeline(NewCountVectoriser(false), NewTfidfTransformer(), NewTruncatedSVD(100))
 //
+//	lsaPipeline := NewPipeline(NewCountVectoriser(false), NewTfidfTransformer(), NewTruncatedSVD(100))
 type Pipeline struct {
 	Vectoriser   Vectoriser
 	Transformers []Transformer

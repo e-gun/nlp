@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/james-bowman/sparse"
+	"github.com/e-gun/sparse"
 	"gonum.org/v1/gonum/mat"
 )
 

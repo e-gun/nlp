@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/exp/rand"
 
-	"github.com/james-bowman/sparse"
+	"github.com/e-gun/sparse"
 	"gonum.org/v1/gonum/mat"
 	"gonum.org/v1/gonum/stat/distuv"
 	"gonum.org/v1/gonum/stat/sampleuv"
@@ -18,12 +18,14 @@ import (
 // A set of random hyperplanes are created in the original dimensional
 // space and then input matrices are expressed relative to the random
 // hyperplanes as follows:
+//
 //	For each column vector in the input matrix, construct a corresponding output
-// 	bit vector with each bit (i) calculated as follows:
+//	bit vector with each bit (i) calculated as follows:
 //		if dot(vector, hyperplane[i]) > 0
-// 			bit[i] = 1
-// 		else
+//			bit[i] = 1
+//		else
 //			bit[i] = 0
+//
 // Whilst similar to other methods of random projection this method is unique in that
 // it uses only a single bit in the output matrix to represent the sign of the result
 // of the comparison (Dot product) with each hyperplane so encodes vector

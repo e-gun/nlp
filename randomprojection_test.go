@@ -4,8 +4,8 @@ import (
 	"math"
 	"testing"
 
-	"github.com/james-bowman/nlp/measures/pairwise"
-	"github.com/james-bowman/sparse"
+	"github.com/e-gun/nlp/measures/pairwise"
+	"github.com/e-gun/sparse"
 	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/mat"
 )

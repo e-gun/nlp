@@ -3,8 +3,8 @@ package nlp_test
 import (
 	"fmt"
 
-	"github.com/james-bowman/nlp"
-	"github.com/james-bowman/nlp/measures/pairwise"
+	"github.com/e-gun/nlp"
+	"github.com/e-gun/nlp/measures/pairwise"
 	"gonum.org/v1/gonum/mat"
 )
 

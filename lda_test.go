@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/exp/rand"
 
-	"github.com/james-bowman/nlp"
+	"github.com/e-gun/nlp"
 	"gonum.org/v1/gonum/mat"
 )
 

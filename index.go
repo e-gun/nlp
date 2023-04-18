@@ -4,8 +4,8 @@ import (
 	"container/heap"
 	"sync"
 
-	"github.com/james-bowman/nlp/measures/pairwise"
-	"github.com/james-bowman/sparse"
+	"github.com/e-gun/nlp/measures/pairwise"
+	"github.com/e-gun/sparse"
 	"gonum.org/v1/gonum/mat"
 )
 

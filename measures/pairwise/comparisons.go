@@ -3,7 +3,7 @@ package pairwise
 import (
 	"math"
 
-	"github.com/james-bowman/sparse"
+	"github.com/e-gun/sparse"
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -29,7 +29,9 @@ func CosineSimilarity(a, b mat.Vector) float64 {
 }
 
 // CosineDistance is the complement of CosineSimilarity in the positive space.
-// 	CosineDistance = 1.0 - CosineSimilariy
+//
+//	CosineDistance = 1.0 - CosineSimilariy
+//
 // It should be noted that CosineDistance is not strictly a valid distance measure
 // as it does not obey triangular inequality.  For applications requiring a distance
 // measure that conforms with the strict definition then AngularDistance or
@@ -56,7 +58,8 @@ func AngularDistance(a, b mat.Vector) float64 {
 }
 
 // AngularSimilarity is the inverse of AngularDistance.
-// 	AngularSimilarity = 1.0 - AngularDistance
+//
+//	AngularSimilarity = 1.0 - AngularDistance
 func AngularSimilarity(a, b mat.Vector) float64 {
 	return 1.0 - AngularDistance(a, b)
 }

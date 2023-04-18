@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	radix "github.com/armon/go-radix"
-	"github.com/james-bowman/sparse"
+	"github.com/e-gun/sparse"
 )
 
 // lshTableBucket represents a hash table bucket used for ClassicLSH.  The bucket
@@ -14,7 +14,7 @@ type lshTableBucket []interface{}
 
 // lshTable is an hash table used for ClassicLSH.  It is simply a map of hashcodes
 // to lshTableBuckets
-//type lshTable map[uint64]lshTableBucket
+// type lshTable map[uint64]lshTableBucket
 type lshTable map[uint64]lshTableBucket
 
 // remove removes the specified item from the LSH table
