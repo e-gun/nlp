@@ -1,6 +1,8 @@
 package nlp
 
 import (
+	"context"
+	"fmt"
 	"math"
 	"runtime"
 	"sync"
@@ -65,7 +67,7 @@ func (l *ldaMiniBatch) reset() {
 // This transformer uses a parallel implemention of the
 // SCVB0 (Stochastic Collapsed Variational Bayes) Algorithm (https://arxiv.org/pdf/1305.2452.pdf)
 // by Jimmy Foulds with optional `clumping` optimisations.
-type LatentDirichletAllocation struct {
+type ORIGINALLatentDirichletAllocation struct {
 	// Iterations is the maximum number of training iterations
 	Iterations int
 
@@ -142,7 +144,7 @@ type LatentDirichletAllocation struct {
 
 // NewLatentDirichletAllocation returns a new LatentDirichletAllocation type initialised
 // with default values for k topics.
-func NewLatentDirichletAllocation(k int) *LatentDirichletAllocation {
+func ORIGINALNewLatentDirichletAllocation(k int) *LatentDirichletAllocation {
 	// TODO:
 	// - Add FitPartial (and FitPartialTransform?) methods
 	// - refactor word counting
@@ -269,6 +271,11 @@ func (l *LatentDirichletAllocation) fitMiniBatch(miniBatch *ldaMiniBatch, wc []f
 	var phiInd, thetaInd int
 
 	for j := miniBatch.start; j < miniBatch.end; j++ {
+		if l.Ctx.Err() != nil {
+			fmt.Println("fitMiniBatch context canceled")
+			return
+		}
+
 		l.burnInDoc(j, l.BurnInPasses, m, wc[j], &miniBatch.gamma, nTheta)
 
 		rhoTheta = l.RhoTheta.Calc(l.rhoThetaT + float64(l.BurnInPasses))
@@ -499,6 +506,10 @@ func (l *LatentDirichletAllocation) FitTransform(m mat.Matrix) (mat.Matrix, erro
 	var prevPerplexity float64
 
 	for it := 0; it < l.Iterations; it++ {
+		if l.Ctx.Err() != nil {
+			fmt.Println("FitTransform context canceled")
+			return mat.NewDense(0, 0, nil), l.Ctx.Err()
+		}
 		l.rhoThetaT++
 
 		mb := make(chan int)
@@ -539,4 +550,84 @@ func (l *LatentDirichletAllocation) FitTransform(m mat.Matrix) (mat.Matrix, erro
 		}
 	}
 	return mat.DenseCopyOf(mat.NewDense(c, l.K, l.normaliseTheta(nTheta, thetaProb)).T()), nil
+}
+
+//
+// modified
+//
+
+// NewLatentDirichletAllocation returns a new LatentDirichletAllocation type initialised
+// with default values for k topics.
+func NewLatentDirichletAllocation(k int) *LatentDirichletAllocation {
+	// TODO:
+	// - Add FitPartial (and FitPartialTransform?) methods
+	// - refactor word counting
+	// - rename and check rhoTheta_t and rhoPhi_t
+	// - Check visibilitiy of member variables
+	// - Try parallelising:
+	// 		- minibatches
+	// 		- individual docs within minibatches
+	// 		- M step
+	//		- other areas
+	// - investigate whetehr can combine/consolidate fitMiniBatch and burnIn
+	// - Check whether nPhi could be sparse
+	// - Add persistence methods
+
+	l := LatentDirichletAllocation{
+		Iterations:                    1000,
+		PerplexityTolerance:           1e-2,
+		PerplexityEvaluationFrequency: 30,
+		BatchSize:                     100,
+		K:                             k,
+		BurnInPasses:                  1,
+		TransformationPasses:          500,
+		MeanChangeTolerance:           1e-5,
+		ChangeEvaluationFrequency:     30,
+		Alpha:                         0.1,
+		Eta:                           0.01,
+		RhoPhi: LearningSchedule{
+			S:     10,
+			Tau:   1000,
+			Kappa: 0.9,
+		},
+		RhoTheta: LearningSchedule{
+			S:     1,
+			Tau:   10,
+			Kappa: 0.9,
+		},
+		rhoPhiT:   1,
+		rhoThetaT: 1,
+		Rnd:       rand.New(rand.NewSource(uint64(time.Now().UnixNano()))),
+		Processes: runtime.GOMAXPROCS(0),
+	}
+
+	return &l
+}
+
+type LatentDirichletAllocation struct {
+	// e-gun added this...
+	Ctx                           context.Context
+	Iterations                    int
+	PerplexityTolerance           float64
+	PerplexityEvaluationFrequency int
+	BatchSize                     int
+	K                             int
+	BurnInPasses                  int
+	TransformationPasses          int
+	MeanChangeTolerance           float64
+	ChangeEvaluationFrequency     int
+	Alpha                         float64
+	Eta                           float64
+	RhoPhi                        LearningSchedule
+	RhoTheta                      LearningSchedule
+	rhoPhiT                       float64
+	rhoThetaT                     float64
+	wordsInCorpus                 float64
+	w, d                          int
+	Rnd                           *rand.Rand
+	phiMutex                      sync.Mutex
+	zMutex                        sync.Mutex
+	Processes                     int
+	nPhi                          []float64
+	nZ                            []float64
 }
