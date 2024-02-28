@@ -2,7 +2,6 @@ package nlp
 
 import (
 	"context"
-	"fmt"
 	"math"
 	"runtime"
 	"sync"
@@ -272,7 +271,7 @@ func (l *LatentDirichletAllocation) fitMiniBatch(miniBatch *ldaMiniBatch, wc []f
 
 	for j := miniBatch.start; j < miniBatch.end; j++ {
 		if l.Ctx.Err() != nil {
-			fmt.Println("fitMiniBatch context canceled")
+			// fmt.Println("fitMiniBatch context canceled")
 			return
 		}
 
@@ -507,8 +506,8 @@ func (l *LatentDirichletAllocation) FitTransform(m mat.Matrix) (mat.Matrix, erro
 
 	for it := 0; it < l.Iterations; it++ {
 		if l.Ctx.Err() != nil {
-			fmt.Println("FitTransform context canceled")
-			return mat.NewDense(0, 0, nil), l.Ctx.Err()
+			// fmt.Println("FitTransform context canceled")
+			return mat.NewDense(1, 1, nil), l.Ctx.Err()
 		}
 		l.rhoThetaT++
 
